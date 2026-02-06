@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dabf6f7b18116f648bcec079116206af, type: 3}
+  m_Name: MonsterSpriteDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::DarkFort.Combat.MonsterSpriteDatabase
+  BloodDrenchedSkeleton: {fileID: -964824239653993824, guid: 4eb322441cb141b4c90fdaf0a60005e8, type: 3}
+  CatacombCultist: {fileID: -764933167753427129, guid: ccfff0080220f054db3e830e91074a94, type: 3}
+  Goblin: {fileID: 2572365745140355499, guid: 169bfc3f3d0353a45b530f6140c72b8d, type: 3}
+  UndeadHound: {fileID: 1480917699468073914, guid: f4b8ba55774ffa5458f1f3eae88aba45, type: 3}
+  NecroSorcerer: {fileID: 778744683185525484, guid: 54dadda8d7169f44b93217db581f1190, type: 3}
+  SmallStoneTroll: {fileID: 4189353577452319699, guid: b5e9582189198034aaf944a52f25193d, type: 3}
+  Medusa: {fileID: 4136674337628803617, guid: c668a5a3aa81aeb43b1340b137ade078, type: 3}
+  RuinBasilisk: {fileID: -8688392260014441854, guid: 069ca27c8662a9b469125ddb67c037fd, type: 3}
+  CustomMonsters: []
