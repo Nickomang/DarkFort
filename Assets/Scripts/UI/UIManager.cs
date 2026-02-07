@@ -152,6 +152,9 @@ namespace DarkFort.UI
         // Choice panel state
         private List<GameObject> activeChoiceButtons = new List<GameObject>();
         private System.Action<int> currentChoiceCallback;
+
+        // Track if we need to return to merchant after level up choice
+        private bool wasInMerchantBeforeLevelUp = false;
         #endregion
 
         #region Properties
@@ -2099,6 +2102,9 @@ namespace DarkFort.UI
         {
             if (roll == 6)
             {
+                // Track if we're interrupting merchant mode
+                wasInMerchantBeforeLevelUp = Core.Inventory.Instance?.IsMerchantModeActive ?? false;
+
                 pendingLevelUpCallback = callback;
                 selectedWeakMonster = null;
                 selectedToughMonster = null;
@@ -2173,6 +2179,14 @@ namespace DarkFort.UI
                 // Complete the level up
                 pendingLevelUpCallback?.Invoke(6);
                 pendingLevelUpCallback = null;
+
+                // Restore merchant if we were in it before
+                if (wasInMerchantBeforeLevelUp)
+                {
+                    wasInMerchantBeforeLevelUp = false;
+                    // Re-trigger merchant display
+                    Dungeon.RoomEncounterSystem.RefreshMerchantIfActive();
+                }
             }
         }
 
@@ -2183,6 +2197,9 @@ namespace DarkFort.UI
         {
             if (Core.Player.Instance == null || !Core.Player.Instance.CanLevelUpBySilver) return;
 
+            // Track if we're interrupting merchant mode
+            bool wasInMerchant = Core.Inventory.Instance?.IsMerchantModeActive ?? false;
+
             ShowChoicePanel(
                 "Level Up via Silver",
                 $"Spend 40 silver to level up?\n(Current silver: {Core.Inventory.Instance?.Gold ?? 0})",
@@ -2190,7 +2207,31 @@ namespace DarkFort.UI
                 (index) => {
                     if (index == 0)
                     {
+                        // Track merchant state for potential roll 6 choice
+                        wasInMerchantBeforeLevelUp = wasInMerchant;
                         Core.Player.Instance.TryLevelUpBySilver();
+
+                        // If the roll wasn't 6, restore merchant now
+                        // (roll 6 will restore in OnToughMonsterChosen)
+                        if (wasInMerchant && !wasInMerchantBeforeLevelUp)
+                        {
+                            // wasInMerchantBeforeLevelUp was reset, meaning roll wasn't 6
+                            Dungeon.RoomEncounterSystem.RefreshMerchantIfActive();
+                        }
+                        else if (wasInMerchant && pendingLevelUpCallback == null)
+                        {
+                            // No pending callback means roll wasn't 6
+                            wasInMerchantBeforeLevelUp = false;
+                            Dungeon.RoomEncounterSystem.RefreshMerchantIfActive();
+                        }
+                    }
+                    else
+                    {
+                        // Player said "Not yet", restore merchant if needed
+                        if (wasInMerchant)
+                        {
+                            Dungeon.RoomEncounterSystem.RefreshMerchantIfActive();
+                        }
                     }
                 }
             );

@@ -392,7 +392,7 @@ namespace DarkFort.Combat
         public override void OnDeath(Monster monster)
         {
             int silver = silverDice.Roll();
-            Core.Inventory.Instance?.AddGold(silver);
+            Core.Inventory.Instance?.AddGold(silver, playSound: true);
             UI.UIManager.Instance?.ShowMessage($"Found {silver} silver!", UI.MessageType.Success);
             Debug.Log($"{monster.MonsterName} dropped {silver} silver");
         }
@@ -419,7 +419,7 @@ namespace DarkFort.Combat
             int rollA = UnityEngine.Random.Range(1, diceASides + 1);
             int rollB = UnityEngine.Random.Range(1, diceBSides + 1);
             int silver = rollA * rollB;
-            Core.Inventory.Instance?.AddGold(silver);
+            Core.Inventory.Instance?.AddGold(silver, playSound: true);
             UI.UIManager.Instance?.ShowMessage($"Found {silver} silver! ({rollA}×{rollB})", UI.MessageType.Success);
             Debug.Log($"{monster.MonsterName} dropped {silver} silver ({rollA}×{rollB})");
         }

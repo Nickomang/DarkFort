@@ -1,4 +1,5 @@
 using UnityEngine;
+using DarkFort.Audio;
 using DarkFort.Combat;
 using DarkFort.Core;
 using DarkFort.UI;
@@ -102,15 +103,7 @@ namespace DarkFort.Dungeon
         /// </summary>
         public static EncounterType RollForStartRoomEncounter()
         {
-            // TODO: Remove this debug override
-            // DEBUG: Always give item for testing
-            /*
-            Debug.Log("DEBUG: Start room forced to give item");
-            OnEncounterRolled?.Invoke(1, EncounterType.StartItem);
-            return EncounterType.StartItem;
-            */
-            
-            int roll = UnityEngine.Random.Range(1, 5); // d4
+            int roll = Random.Range(1, 5); // d4
             EncounterType encounter = roll switch
             {
                 1 => EncounterType.StartItem,
@@ -124,7 +117,6 @@ namespace DarkFort.Dungeon
             OnEncounterRolled?.Invoke(roll, encounter);
 
             return encounter;
-            
         }
 
         /// <summary>
@@ -248,7 +240,7 @@ namespace DarkFort.Dungeon
             switch (choiceIndex)
             {
                 case 0: // 10 Silver
-                    Inventory.Instance?.AddGold(10);
+                    Inventory.Instance?.AddGold(10, playSound: true);
                     UIManager.Instance?.ShowMessage("You receive 10 silver coins!", MessageType.Success);
                     break;
                     
@@ -404,6 +396,17 @@ namespace DarkFort.Dungeon
             RefreshMerchantPanel();
         }
         
+        /// <summary>
+        /// Refresh merchant panel if merchant mode is active (called after level up interruption)
+        /// </summary>
+        public static void RefreshMerchantIfActive()
+        {
+            if (Inventory.Instance?.IsMerchantModeActive == true)
+            {
+                RefreshMerchantPanel();
+            }
+        }
+        
         private static void RefreshMerchantPanel()
         {
             // Re-enable merchant mode (in case it was disabled)
@@ -454,6 +457,7 @@ namespace DarkFort.Dungeon
             
             Inventory.Instance.SpendGold(item.BuyPrice);
             Inventory.Instance.AddItem(item.Clone());
+            AudioManager.Instance?.PlayItemBuy();
             UIManager.Instance?.ShowMessage($"Purchased {item.ItemName} for {item.BuyPrice} silver!", MessageType.Success);
             return true;
         }
@@ -473,6 +477,7 @@ namespace DarkFort.Dungeon
             {
                 Inventory.Instance.SpendGold(weapon.BuyPrice);
                 Player.Instance.EquipWeapon(weapon.Clone());
+                AudioManager.Instance?.PlayItemBuy();
                 UIManager.Instance?.ShowMessage($"Purchased and equipped {weapon.WeaponName} for {weapon.BuyPrice} silver!", MessageType.Success);
                 return true;
             }
@@ -485,6 +490,7 @@ namespace DarkFort.Dungeon
             
             Inventory.Instance.SpendGold(weapon.BuyPrice);
             Inventory.Instance.AddWeapon(weapon.Clone());
+            AudioManager.Instance?.PlayItemBuy();
             UIManager.Instance?.ShowMessage($"Purchased {weapon.WeaponName} for {weapon.BuyPrice} silver!", MessageType.Success);
             return true;
         }

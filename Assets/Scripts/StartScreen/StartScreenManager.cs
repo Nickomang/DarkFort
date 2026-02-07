@@ -15,8 +15,8 @@ namespace DarkFort.UI
         [SerializeField] private Button playButton;
 
         [Header("Settings")]
-        [SerializeField] private string gameplaySceneName = "GameplayScene";
-        [SerializeField] private string defaultPlayerName = "Adventurer";
+        [SerializeField] private string gameplaySceneName = "Gameplay";
+        [SerializeField] private string defaultPlayerName = "Kargunt";
         [SerializeField] private int maxNameLength = 20;
 
         // Static so it persists between scenes
@@ -115,7 +115,7 @@ namespace DarkFort.UI
             Debug.Log($"Starting game with player name: {playerName}");
 
             // Load the gameplay scene
-            SceneManager.LoadScene(gameplaySceneName);
+            SceneManager.LoadScene("Gameplay");
         }
     }
 }

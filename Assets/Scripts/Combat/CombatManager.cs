@@ -1,6 +1,7 @@
 using UnityEngine;
 using DarkFort.Core;
 using DarkFort.UI;
+using DarkFort.Audio;
 
 namespace DarkFort.Combat
 {
@@ -207,6 +208,9 @@ namespace DarkFort.Combat
                 // HIT! Deal weapon damage to monster
                 int damage = Player.Instance.GetWeaponDamage();
 
+                // Play hit sound
+                AudioManager.Instance?.PlayHit();
+
                 // Add daemon damage if active
                 if (Player.Instance.HasDaemon)
                 {
@@ -261,6 +265,12 @@ namespace DarkFort.Combat
             int finalDamage = CalculateDamageAfterArmor(monsterDamageRoll);
 
             Player.Instance.TakeDamage(finalDamage);
+
+            // Play player hurt sound
+            if (finalDamage > 0)
+            {
+                AudioManager.Instance?.PlayPlayerHurt();
+            }
 
             // Trigger monster's damage dealt effects
             currentMonster.TriggerOnDamageDealt(finalDamage);

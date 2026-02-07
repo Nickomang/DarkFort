@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using DarkFort.UI;
+using DarkFort.Audio;
 
 namespace DarkFort.Core
 {
@@ -197,6 +198,7 @@ namespace DarkFort.Core
             RemoveWeapon(weapon);
             AddGold(sellValue);
 
+            AudioManager.Instance?.PlayItemSell();
             UIManager.Instance?.ShowMessage($"Sold {weapon.WeaponName} for {sellValue} silver", MessageType.Success);
             OnWeaponSold?.Invoke(weapon, sellValue);
 
@@ -225,6 +227,7 @@ namespace DarkFort.Core
             int sellValue = weapon.SellPrice;
             AddGold(sellValue);
 
+            AudioManager.Instance?.PlayItemSell();
             UIManager.Instance?.ShowMessage($"Sold {weapon.WeaponName} for {sellValue} silver. You are now unarmed!", MessageType.Warning);
             OnWeaponSold?.Invoke(weapon, sellValue);
 
@@ -361,6 +364,7 @@ namespace DarkFort.Core
             RemoveOneFromStack(item);
             AddGold(sellValue);
 
+            AudioManager.Instance?.PlayItemSell();
             string stackInfo = item.StackCount > 0 ? $" ({item.StackCount} remaining)" : "";
             UIManager.Instance?.ShowMessage($"Sold {item.ItemName} for {sellValue} silver{stackInfo}", MessageType.Success);
             OnItemSold?.Invoke(item, sellValue);
@@ -504,7 +508,7 @@ namespace DarkFort.Core
         #endregion
 
         #region Gold Management
-        public void AddGold(int amount)
+        public void AddGold(int amount, bool playSound = false)
         {
             gold += amount;
 
@@ -512,6 +516,12 @@ namespace DarkFort.Core
             if (amount > 0)
             {
                 Player.Instance?.AddSilverCollected(amount);
+
+                // Play coin sound for loot pickups
+                if (playSound)
+                {
+                    AudioManager.Instance?.PlayCoin();
+                }
             }
 
             OnGoldChanged?.Invoke(gold);
